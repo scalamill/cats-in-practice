@@ -39,7 +39,7 @@ case class Transaction(transactionType: TransactionType.TRANSXN, amount: Double)
 
 object CombineAllCredit extends Semigroup[Transaction] {
   override def combine(a: Transaction, b: Transaction): Transaction = {
-    if (a.transactionType == TransactionType.Credit && b.transactionType == TransactionType.Credit) {
+    if (b.transactionType == TransactionType.Credit) {
       a.copy(amount = a.amount + b.amount)
     } else {
       a
@@ -49,7 +49,7 @@ object CombineAllCredit extends Semigroup[Transaction] {
 
 object CombineAllDebit extends Semigroup[Transaction] {
   override def combine(a: Transaction, b: Transaction): Transaction = {
-    if (a.transactionType == TransactionType.Debit && b.transactionType == TransactionType.Debit) {
+    if (b.transactionType == TransactionType.Debit) {
       a.copy(amount = a.amount + b.amount)
     } else {
       a
