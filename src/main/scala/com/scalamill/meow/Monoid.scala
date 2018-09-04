@@ -5,8 +5,6 @@ import cats.implicits._
 
 object MonoidExample extends App {
 
- println("hello")
-
   val intMonoid = Monoid[Int]
   val strMonoid = Monoid[String]
   val listMonoid = Monoid[List[Int]]
@@ -35,7 +33,6 @@ object MonoidExample extends App {
 
 object TransactionType extends Enumeration {
     type TRANSXN = Value
-
     val CREDIT = Value("Credit")
     val DEBIT = Value("Debit")
     val INVALID_OR_NO_TRANSACTION = Value("InvalidOrNoTransaction")
@@ -50,7 +47,7 @@ object CombineAllCredit extends Monoid[Transaction] {
    override def combine(a: Transaction, b: Transaction): Transaction = {
     if(b.transactionType == TransactionType.CREDIT) 
     {
-      a.copy(amount = a.amount + b.amount)
+      a.copy(transactionType = TransactionType.CREDIT, amount = a.amount + b.amount)
     } else {
       a
     }
@@ -65,7 +62,7 @@ object CombineAllDebit extends Monoid[Transaction] {
   override def combine(a: Transaction, b: Transaction): Transaction = {
     if(b.transactionType == TransactionType.DEBIT) 
     {
-      a.copy(amount = a.amount + b.amount)
+      a.copy(transactionType = TransactionType.DEBIT, amount = a.amount + b.amount)
     } else {
       a
     }
@@ -88,13 +85,6 @@ object Finalbalance extends Monoid[Transaction] {
   }
 }
 
-object reportSevice {
-  def report(transactions: Seq[Transaction]) = {
-    val Transaction(_, totalCredit) = transactions.foldLeft(CombineAllCredit.empty)(CombineAllCredit.combine)
-    val Transaction(_, totalDebit)  =  transactions.foldLeft(CombineAllDebit.empty)(CombineAllDebit.combine)
-    val Transaction(_, finalbalance) = transactions.foldLeft(Finalbalance.empty)(Finalbalance.combine)
-    s"Total Credit is $totalCredit and total debit is $totalDebit and final Balance is $finalbalance"
-  }
-}
+
 
 
